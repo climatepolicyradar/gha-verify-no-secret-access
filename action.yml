@@ -1,0 +1,25 @@
+name: No Secret Access
+description: Verify that there is no secret access
+inputs:
+  repo_secret:
+    description: Verify that the secret is not accessible.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Verify No Secret Token Access
+      shell: bash
+      run: |
+          if [ -z "$REPO_SECRET" ]; then
+              echo "Secret token is not accessible as desired!"
+              exit 0
+          else
+              echo "Secret token should not be accessible! Exiting..."
+              exit 1
+          fi
+      env:
+          REPO_SECRET: ${{ inputs.repo_secret }}
